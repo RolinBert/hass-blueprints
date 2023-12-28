@@ -63,7 +63,6 @@ blueprint:
         Home Assistant app to receive notifications.
       selector:
         device:
-          integration: mobile_app
           domain: mobile_app
 
 # We will have two triggers, for the two different reminders.
