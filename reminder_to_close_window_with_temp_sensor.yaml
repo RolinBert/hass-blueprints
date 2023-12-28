@@ -1,8 +1,8 @@
-# 
+#
 # Home Assistant Automation Blueprint
 #
-# Sends two notifications to close a window or door after opening it, 
-# if the temperature reading of a given sensor is below a certain degree. 
+# Sends two notifications to close a window or door after opening it,
+# if the temperature reading of a given sensor is below a certain degree.
 #
 # Revision 1
 # Roozbeh Farahbod, Jan. 2021
@@ -12,18 +12,18 @@ blueprint:
   name: 'Notification to Close a Window (custom sensor)'
   description: Notification to close windows if it is cold outside
   domain: automation
-  input: 
-    contact_sensor: 
+  input:
+    contact_sensor:
       name: Contact Sensor
       description: 'The window or door sensor that triggers the automation.'
-      selector: 
+      selector:
         entity:
           domain: binary_sensor
     first_timer:
       name: 'First timer'
       description: 'The first notification timer (in minutes).'
       default: 10
-      selector: 
+      selector:
         number:
           min: 1
           step: 1
@@ -33,16 +33,16 @@ blueprint:
       name: 'Second timer'
       description: 'The second notification timer (in minutes).'
       default: 15
-      selector: 
+      selector:
         number:
           min: 1
           step: 1
           max: 60
           mode: slider
-    temperature_sensor: 
+    temperature_sensor:
       name: Temperature Sensor
       description: 'The sensor used for reading the temperature.'
-      selector: 
+      selector:
         entity:
           domain: sensor
           device_class: temperature
@@ -50,7 +50,7 @@ blueprint:
       name: 'Temperature'
       description: 'The outside temperature below which the notification should be sent.'
       default: 20
-      selector: 
+      selector:
         number:
           min: 0
           step: 1
@@ -59,14 +59,15 @@ blueprint:
     device_identifier:
       name: Device to notify
       description: >
-        The device to receive the notification; it needs to run the official 
+        The device to receive the notification; it needs to run the official
         Home Assistant app to receive notifications.
-      selector: 
+      selector:
         device:
           integration: mobile_app
+          domain: mobile_app
 
-# We will have two triggers, for the two different reminders. 
-# However, a reminder will be ignored if the door or window is already closed by then. 
+# We will have two triggers, for the two different reminders.
+# However, a reminder will be ignored if the door or window is already closed by then.
 trigger:
 - platform: state
   entity_id: !input contact_sensor
@@ -86,8 +87,8 @@ trigger:
     seconds: 0
 
 # Two conditions:
-# 1. The door or window should still be open. 
-# 2. The outside temperature must be below the set value. 
+# 1. The door or window should still be open.
+# 2. The outside temperature must be below the set value.
 condition:
 - condition: state
   entity_id: !input contact_sensor
@@ -96,7 +97,7 @@ condition:
   entity_id: !input temperature_sensor
   below: !input temperature
 
-# Send a notification to the mobile device. 
+# Send a notification to the mobile device.
 action:
 - device_id: !input device_identifier
   domain: mobile_app
